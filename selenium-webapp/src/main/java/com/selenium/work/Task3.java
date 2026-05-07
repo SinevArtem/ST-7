@@ -9,6 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class Task3 {
     
@@ -38,8 +40,22 @@ public class Task3 {
             System.out.println("│ №  │ Дата/время          │ Температура │ Осадки (мм) │");
             System.out.println("├────┼─────────────────────┼─────────────┼─────────────┤");
             
-            FileWriter fileWriter = new FileWriter("result/forecast.txt");
+            // Путь к папке result на уровень выше (относительно текущей рабочей директории)
+            Path currentPath = Paths.get("").toAbsolutePath();
+            Path resultPath = currentPath.getParent().resolve("result");
+            String resultDirPath = resultPath.toString();
+            
+            // Создаем папку если нет
+            java.io.File resultDir = new java.io.File(resultDirPath);
+            if (!resultDir.exists()) {
+                resultDir.mkdirs();
+                System.out.println("Создана папка: " + resultDirPath);
+            }
+            
+            String filePath = resultDirPath + "/forecast.txt";
+            FileWriter fileWriter = new FileWriter(filePath);
             PrintWriter printWriter = new PrintWriter(fileWriter);
+            
             printWriter.println("Прогноз погоды для Нижнего Новгорода (координаты: 56°N, 44°E)");
             printWriter.println("================================================================================\n");
             printWriter.printf("%-4s %-20s %-12s %-12s\n", "№", "Дата/время", "Температура,°C", "Осадки, мм");
@@ -70,7 +86,7 @@ public class Task3 {
             printWriter.close();
             fileWriter.close();
             
-            System.out.println("\n✓ Прогноз погоды сохранен в файл: result/forecast.txt");
+            System.out.println("\n✓ Прогноз погоды сохранен в файл: " + filePath);
             System.out.println();
             
         } catch (Exception e) {
